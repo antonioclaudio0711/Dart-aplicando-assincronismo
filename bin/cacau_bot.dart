@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'questions/good_manners.dart';
 import 'questions/time_questions.dart';
 import 'timing/waiting_time.dart';
 
@@ -7,6 +9,16 @@ void main() async {
   String cacauBot = 'CacauBOT:\n';
   var a = true;
   String usuario = '';
+  Stream myStream = BotClock().cacauBotStream(interval: 2, maxCount: 10);
+  StreamSubscription mySubscriber = myStream.listen(
+    (event) {
+      print("               CacauBOT está ativo há $event segundos");
+    },
+    onDone: () {
+      print("CacauBOT está finalizando seu trabalho. Faça a última pergunta!");
+      a = false;
+    },
+  );
 
   print('-- Iniciando o CacauBOT, aguarde..--');
   await BotClock().clock(seconds: 2);
@@ -27,8 +39,9 @@ void main() async {
     } else if (TimeQuestions(usuario).isThisTime()) {
       await BotClock().clock(seconds: 2);
       TimeQuestions(usuario).timeQuestion();
-    } else if (false) {
-      //Basta adicionar novas perguntas aqui!
+    } else if (GoodManers(question: usuario).isThisManners()) {
+      await BotClock().clock(seconds: 2);
+      GoodManers(question: usuario).goodManners();
     } else {
       await BotClock().clock(seconds: 2);
       print(
